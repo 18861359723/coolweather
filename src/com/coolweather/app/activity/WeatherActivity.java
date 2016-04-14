@@ -1,12 +1,15 @@
 package com.coolweather.app.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,7 +18,7 @@ import com.coolweather.app.util.HttpCallBackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
 
-public class WeatherActivity extends Activity{
+public class WeatherActivity extends Activity implements OnClickListener{
 	
 	private LinearLayout weatherLayout ;
 	private TextView cityName;
@@ -24,6 +27,9 @@ public class WeatherActivity extends Activity{
 	private TextView weatherDesp;
 	private TextView temp1;
 	private TextView temp2;
+	
+	private Button home;
+	private Button refresh;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,10 @@ public class WeatherActivity extends Activity{
 		weatherDesp = (TextView)findViewById(R.id.weather_desp);
 		temp1 = (TextView)findViewById(R.id.temp1);
 		temp2 = (TextView)findViewById(R.id.temp2);
+		home = (Button)findViewById(R.id.home);
+		refresh = (Button)findViewById(R.id.refresh);
+		home.setOnClickListener(this);
+		refresh.setOnClickListener(this);
 		String countyCode = getIntent().getStringExtra("county_code");
 		if(!TextUtils.isEmpty(countyCode)){
 			publishTime.setText("更新中...");
@@ -46,6 +56,28 @@ public class WeatherActivity extends Activity{
 			searchWeatherCode(countyCode);
 		}else {
 			showWeatherInfo();
+		}
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()){
+		case R.id.home:
+			Intent intent = new Intent(this,ChooseAreaActivity.class);
+			intent.putExtra("isFromWeather", true);
+			startActivity(intent);
+			finish();
+			break;
+		case R.id.refresh:
+			publishTime.setText("同步中...");
+			SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
+			String weatherCode = pre.getString("weather_code", "");
+			if(!TextUtils.isEmpty(weatherCode)){
+			searchWeatherInfo(weatherCode);
+			}
+			break;
+			default:
+				break;
 		}
 	}
 	

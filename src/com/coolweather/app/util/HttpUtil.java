@@ -19,8 +19,8 @@ public class HttpUtil {
 					URL url = new URL(address);
 					connection = (HttpURLConnection)url.openConnection();
 					connection.setRequestMethod("GET");
-					connection.setConnectTimeout(5000);
-					connection.setReadTimeout(5000);
+					connection.setConnectTimeout(8000);
+					connection.setReadTimeout(8000);
 					InputStream in = connection.getInputStream();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 					StringBuilder sb = new StringBuilder();
