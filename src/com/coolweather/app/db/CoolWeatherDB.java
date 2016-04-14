@@ -23,9 +23,9 @@ public class CoolWeatherDB {
 	}
 	
 	public static synchronized CoolWeatherDB getInstance(Context context){
-		if(coolWeatherDB!=null){
+		if(coolWeatherDB == null){
 			coolWeatherDB = new CoolWeatherDB(context);
-		}
+		}  
 		return coolWeatherDB;
 	}
 	
@@ -91,7 +91,7 @@ public class CoolWeatherDB {
 			values.put("county_name", county.getCountyName());
 			values.put("county_code", county.getCountyCode());
 			values.put("city_id", county.getCityId());
-			db.insert("county", null, values);
+			db.insert("County", null, values);
 		}
 	}
 	
