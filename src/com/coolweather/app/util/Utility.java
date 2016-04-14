@@ -1,5 +1,15 @@
 package com.coolweather.app.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.coolweather.app.db.CoolWeatherDB;
@@ -63,5 +73,37 @@ public class Utility {
 			}
 		}
 		return false;
+	}
+	
+	public static void handleWeatherReaponse(Context context,String response){
+		try {
+			JSONObject jsonObject = new JSONObject(response);
+			JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
+			String cityName = weatherInfo.getString("city");
+			String weatherCode = weatherInfo.getString("cityid");
+			String temp1 = weatherInfo.getString("temp1");
+			String temp2 = weatherInfo.getString("temp2");
+			String weather = weatherInfo.getString("weather");
+			String ptime = weatherInfo.getString("ptime");
+			saveWeatherInfo(context,cityName,weatherCode,temp1,temp2,weather,ptime);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void saveWeatherInfo(Context context,String cityName,String weatherCode,String temp1,
+			String temp2,String weather,String ptime){
+		SharedPreferences.Editor editor = PreferenceManager.
+				getDefaultSharedPreferences(context).edit();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA);
+		editor.putBoolean("selectedCounty", true);
+		editor.putString("cityName", cityName);
+		editor.putString("weather_code", weatherCode);
+		editor.putString("temp1", temp1);
+		editor.putString("temp2", temp2);
+		editor.putString("weather_desp", weather);
+		editor.putString("current_date", sdf.format(new Date()));
+		editor.putString("publish_time", ptime);
+		editor.commit();
 	}
 }
